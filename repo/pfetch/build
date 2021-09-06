@@ -1,0 +1,4 @@
+cd /tmp/pfetch
+tar --extract -f pfetch.tar.gz
+cd pfetch
+make install

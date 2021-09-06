@@ -1,0 +1,9 @@
+cd /tmp/polybar
+tar --extract -f polybar.tar.gz
+cd polybar
+mkdir build2
+cd build2
+cmake ..
+make -j$(nproc)
+make install
+

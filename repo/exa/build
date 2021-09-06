@@ -1,0 +1,5 @@
+cd /tmp/exa
+tar --extract -f exa.tar.gz
+cd exa
+cargo build
+install target/debug/exa /usr/bin

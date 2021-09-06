@@ -1,0 +1,5 @@
+cd /tmp/feh
+tar --extract -f feh.tar.gz
+cd feh
+make
+make install

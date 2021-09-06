@@ -1,0 +1,5 @@
+cd /tmp/vim
+tar --extract -f vim.tar.gz
+cd vim
+make -j8
+make install

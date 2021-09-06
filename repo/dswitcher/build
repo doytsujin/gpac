@@ -1,0 +1,4 @@
+cd /tmp/dswitcher
+tar --extract -f dswitcher.tar.gz
+cd dswitcher
+make install

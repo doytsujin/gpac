@@ -1,0 +1,5 @@
+cd /tmp/doas
+tar --extract -f doas.tar.gz
+cd doas
+make
+make install

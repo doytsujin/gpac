@@ -1,0 +1,4 @@
+cd /tmp/pokemon-colorscripts
+tar --extract -f pokemon-colorscripts.tar.gz
+cd pokemon-colorscripts
+./install.sh

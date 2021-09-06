@@ -1,0 +1,4 @@
+cd /tmp/xmenu
+tar --extract -f xmenu.tar.gz
+cd xmenu
+make install

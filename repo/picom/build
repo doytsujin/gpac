@@ -1,0 +1,6 @@
+cd /tmp/picom
+tar --extract -f picom.tar.gz
+cd picom
+meson --buildtype=release . build
+ninja -C build
+ninja -C build install

@@ -1,0 +1,4 @@
+cd /tmp/dwm
+tar --extract -f dwm.tar.gz
+cd dwm
+make install

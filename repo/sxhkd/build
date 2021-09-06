@@ -1,0 +1,5 @@
+cd /tmp/sxhkd
+tar --extract -f sxhkd.tar.gz
+cd sxhkd
+make
+make install
