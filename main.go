@@ -32,10 +32,6 @@ func isRoot() bool {
 }
 
 func main() {
-	if isRoot() == false{
-		fmt.Println("rn me as root")
-		os.Exit(127)
-	}
 	if _, err := os.Stat("/etc/gpac.conf"); os.IsNotExist(err) {
 	fmt.Println("/etc/gpac.conf does not exist")
 	os.Exit(1)
@@ -48,6 +44,12 @@ func main() {
 
 
 func build(pkg string) {
+	// root-check
+	if isRoot() == false{
+		fmt.Println("rn me as root")
+		os.Exit(127)
+	}
+
 	fmt.Println(InfoColor+"installing package: " +pkg)
 
 
@@ -186,9 +188,19 @@ func build(pkg string) {
     }
 	fmt.Println(NormalColor,"✅ ", "Package " + pkg+ " installed", ColorReset)
 }
+func help(){
+	fmt.Println("+-----------+\n" +
+				"| gpac help |\n" +
+				"+-----------+" )
+	os.Exit(0)
+}
 
 func  arguments() {
 
+			if os.Args[1] == "help" || os.Args[1] == "h" {
+
+					help()
+				}
 
 
 
@@ -197,11 +209,12 @@ func  arguments() {
 		if i == 0 || i == 1 {
 
 				} else {
+
 				if os.Args[1] == "build" || os.Args[1] == "b" {
 
 				build(arg)
 
-    		}
+				}
 		}
 	}
 }
