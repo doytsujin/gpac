@@ -16,12 +16,11 @@ import (
 
 const (
 	InfoColor    = "\033[1;34m"
-		NormalColor = "\033[32m"
+	NormalColor = "\033[32m"
 	//NoticeColor  = "\033[1;36m%s\033[0m"
 	//WarningColor = "\033[1;33m%s\033[0m"
-        ErrorColor   = "\033[1;31m"
-    	ColorReset = "\033[0m"
-	// DebugColor   = "\033[0;36m%s\033[0m"
+    ErrorColor   = "\033[1;31m"
+    ColorReset = "\033[0m"	// DebugColor   = "\033[0;36m%s\033[0m"
 )
 func isRoot() bool {
     currentUser, err := user.Current()
@@ -46,11 +45,11 @@ func main() {
 func build(pkg string) {
 	// root-check
 	if isRoot() == false{
-		fmt.Println("rn me as root")
+		fmt.Println("run me as root")
 		os.Exit(127)
 	}
 
-	fmt.Println(InfoColor+"installing package: " +pkg)
+	fmt.Println(InfoColor+"installing package: " + pkg)
 
 
 
@@ -108,7 +107,7 @@ func build(pkg string) {
         log.Fatal(err)
     }
 
-
+	// get repo path
     file, err = os.Open("/etc/gpac.conf")
     if err != nil {
         log.Fatal(err)
@@ -122,7 +121,7 @@ func build(pkg string) {
     scanner = bufio.NewScanner(file)
 
     for scanner.Scan() {             // internally, it advances token based on sperator
-        fmt.Println(scanner.Text())  // token in unicode-char
+
 
     bcmd := exec.Command("cp","-r",scanner.Text() + pkg + "/" + "build",tmpdir)
 	bcmd.Stdout = os.Stdout
@@ -146,7 +145,7 @@ func build(pkg string) {
     scanner := bufio.NewScanner(file)
 
     for scanner.Scan() {             // internally, it advances token based on sperator
-		fmt.Println(tmpdir)
+
 		fmt.Println(scanner.Text())
 		var url string = scanner.Text()
 		// "curl",  url, ">",tmpdir + "/", os.Args[2]
@@ -191,7 +190,8 @@ func build(pkg string) {
 func help(){
 	fmt.Println("+-----------+\n" +
 				"| gpac help |\n" +
-				"+-----------+" )
+				"+-----------+\n" +
+				"gpac b packagename")
 	os.Exit(0)
 }
 
@@ -201,7 +201,6 @@ func  arguments() {
 
 					help()
 				}
-
 
 
 	    for i, arg := range os.Args {
