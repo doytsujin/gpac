@@ -18,6 +18,25 @@ const (
 	ColorReset  = "\033[0m"
 )
 
+func main() {
+	if _, err := os.Stat("/etc/gpac.conf"); os.IsNotExist(err) {
+		fmt.Println("/etc/gpac.conf does not exist")
+		os.Exit(1)
+	}
+	if checkargs() {
+		arguments()
+	} else {
+		help()
+	}
+
+	os.Exit(0)
+}
+
+// check if arguments are given
+func checkargs() bool {
+	return len(os.Args) > 1
+}
+
 // root-check func
 func isRoot() bool {
 	currentUser, err := user.Current()
@@ -25,16 +44,6 @@ func isRoot() bool {
 		log.Fatalf("[isRoot] Unable to get current user: %s", err)
 	}
 	return currentUser.Username == "root"
-}
-
-func main() {
-	if _, err := os.Stat("/etc/gpac.conf"); os.IsNotExist(err) {
-		fmt.Println("/etc/gpac.conf does not exist")
-		os.Exit(1)
-	}
-
-	arguments()
-	os.Exit(0)
 }
 
 func build(pkg string) {
@@ -51,9 +60,7 @@ func build(pkg string) {
 		log.Fatal(err)
 	}
 	defer func() {
-		if err = file.Close(); err != nil {
-			// log.Fatal(err)
-		}
+
 	}()
 
 	scanner := bufio.NewScanner(file)
@@ -173,6 +180,7 @@ func build(pkg string) {
 	}
 	fmt.Println(NormalColor, "✅ ", "Package "+pkg+" installed", ColorReset)
 }
+
 func help() {
 	fmt.Println("+-----------+\n" +
 		"| gpac help |\n" +
