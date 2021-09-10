@@ -39,7 +39,7 @@ func main() {
 
 func build(pkg string) {
 	// root-check
-	if isRoot() == false {
+	if !isRoot() {
 		fmt.Println("run me as root")
 		os.Exit(127)
 	}
@@ -78,7 +78,7 @@ func build(pkg string) {
 	tmpdir = tmpdir + pkg
 	fmt.Println(NormalColor, "✅ ", ColorReset, "Creating tmpdir: "+tmpdir)
 
-	if tmpdir != "/" && strings.Contains(tmpdir, "/tmp") == true {
+	if tmpdir != "/" && strings.Contains(tmpdir, "/tmp") {
 		tcmd2 := exec.Command("rm", "-rf", tmpdir)
 		tcmd2.Stdout = os.Stdout
 		tcmd2.Stderr = os.Stderr
