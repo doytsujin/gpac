@@ -1,2 +1,2 @@
 :url[https://github.com/luis-07/tar-balls/releases/download/v0.1/neofetch.tar.gz]
-:build[]
+:build[cd /tmp/neofetch; tar --extract -f neofetch.tar.gz; cd neofetch; make install]

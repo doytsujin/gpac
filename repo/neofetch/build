@@ -1,4 +1,1 @@
-cd /tmp/neofetch
-tar --extract -f neofetch.tar.gz
-cd neofetch
-make install
+cd /tmp/neofetch; tar --extract -f neofetch.tar.gz; cd neofetch; make install
