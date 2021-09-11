@@ -1,0 +1,25 @@
+{
+    "name": "gconf",
+    "displayName": "gconf",
+    "description": "gconf sytax support",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "gconf",
+            "aliases": ["gconf", "gconf"],
+            "extensions": [".gconf"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "gconf",
+            "scopeName": "source.gconf",
+            "path": "./syntaxes/gconf.tmLanguage.json"
+        }]
+    }
+}

@@ -1,0 +1,32 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "gconf",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.gconf",
+				"match": "\\b(url|build)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.gconf",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.gconf",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.gconf"
+}
