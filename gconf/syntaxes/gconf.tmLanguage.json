@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.gconf",
-				"match": "\\b(url|build)\\b"
+				"match": "\\b(url|build|repo)\\b"
 			}]
 		},
 		"strings": {

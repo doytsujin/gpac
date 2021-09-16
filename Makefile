@@ -1,7 +1,7 @@
 b:
 	go build main.go
 	mv main gpac
-	cp gpac.conf /etc/gpac.conf
+	cp gpac.gconf /etc/gpac.gconf
 	install gpac /usr/bin
 install:
 	@echo "run make b to install gpac"

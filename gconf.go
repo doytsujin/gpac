@@ -1,4 +1,4 @@
-package main
+package gconf
 
 import (
 	"fmt"
@@ -6,22 +6,20 @@ import (
 )
 
 func main() {
-	gconf(":url[https://github.com]\n" +
-		":build[cd /tmp]")
+	fmt.Println(gconf(":url[https://github.com]\n"+
+		":text[cd /tmp]", "url"))
 }
 
-func gconf(gconfs string) {
+func gconf(gconfs string, keyword string) string {
+
 	for _, line := range strings.Split(strings.TrimRight(gconfs, "\n"), "\n") {
 
-		if string(line[0:4]) == ":url" {
-			url := line[:len(line)-1]
-			url = url[5:]
-			fmt.Println(url)
-		}
-		if string(line[0:6]) == ":build" {
-			build := line[:len(line)-1]
-			build = build[7:]
-			fmt.Println(build)
+		if string(line[0:len(keyword)+1]) == ":"+keyword {
+			text := line[:len(line)-1]
+			text = text[len(keyword)+2:]
+			return text
 		}
 	}
+	panic("should never happen")
+
 }

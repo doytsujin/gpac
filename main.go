@@ -18,9 +18,23 @@ const (
 	ColorReset  = "\033[0m"
 )
 
+func gconf(gconfs string, keyword string) string {
+
+	for _, line := range strings.Split(strings.TrimRight(gconfs, "\n"), "\n") {
+
+		if string(line[0:len(keyword)+1]) == ":"+keyword {
+			text := line[:len(line)-1]
+			text = text[len(keyword)+2:]
+			return text
+		}
+	}
+	panic("should never happen")
+
+}
+
 func main() {
-	if _, err := os.Stat("/etc/gpac.conf"); os.IsNotExist(err) {
-		fmt.Println("/etc/gpac.conf does not exist")
+	if _, err := os.Stat("/etc/gpac.gconf"); os.IsNotExist(err) {
+		fmt.Println("/etc/gpac.gconf does not exist")
 		os.Exit(1)
 	}
 	if checkargs() {
@@ -55,7 +69,7 @@ func build(pkg string) {
 
 	fmt.Println(InfoColor + "installing package: " + pkg)
 
-	file, err := os.Open("/etc/gpac.conf")
+	file, err := os.Open("/etc/gpac.gconf")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +81,7 @@ func build(pkg string) {
 
 	for scanner.Scan() { // internally, it advances token based on sperator
 
-		var repo string = scanner.Text()
+		var repo string = gconf(scanner.Text(), "repo")
 		var package_location string = repo + pkg
 
 		fmt.Println(NormalColor, "✅", ColorReset, " Using repo at: "+repo)
@@ -103,7 +117,7 @@ func build(pkg string) {
 	}
 
 	// get repo path
-	file, err = os.Open("/etc/gpac.conf")
+	file, err = os.Open("/etc/gpac.gconf")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -117,14 +131,14 @@ func build(pkg string) {
 
 	for scanner.Scan() { // internally, it advances token based on sperator
 
-		bcmd := exec.Command("cp", "-r", scanner.Text()+pkg+"/"+"build", tmpdir)
+		bcmd := exec.Command("cp", "-r", gconf(scanner.Text(), "repo")+pkg+"/"+"build", tmpdir)
 		bcmd.Stdout = os.Stdout
 		bcmd.Stderr = os.Stderr
 		if err := bcmd.Run(); err != nil {
 			log.Fatal(err)
 		}
 
-		file, err := os.Open(scanner.Text() + pkg + "/" + "url")
+		file, err := os.Open(gconf(scanner.Text(), "repo") + pkg + "/" + "url")
 		if err != nil {
 			log.Fatal(err)
 		}
