@@ -202,6 +202,25 @@ func help() {
 		"gpac b packagename")
 	os.Exit(0)
 }
+func create(gconf_file string) {
+	fmt.Println(gconf_file)
+	file, err := os.Open(gconf_file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() { // internally, it advances token based on sperator
+		fmt.Println(gconf(scanner.Text(), "build"))
+
+	}
+}
 
 func arguments() {
 
@@ -220,6 +239,8 @@ func arguments() {
 
 				build(arg)
 
+			} else if os.Args[1] == "c" || os.Args[1] == "create" {
+				create(arg)
 			}
 		}
 	}
