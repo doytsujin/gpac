@@ -1,11 +1,11 @@
-# gpac
-## what is gpac
-A useless packagemanager. 
-It is included in the g suite a suite of tools written in go.
-Gpac is a kiss like packagemanager
-#### WARNING: don't use gpac it's very early beta 
+# gPac
+## What is gPac? 
+gPac is a useless package manager. 
+It is included in the gSuite, which is a suite of tools written in GO.
+gPac is a KISS - like package manager. 
+#### WARNING: Don't use gPac, it's very early shit.
 ## installation
-1. clone the repo
+1. Clone the repo
 ```sh
 git clone https://github.com/luis-07/gpac.git
 ```
@@ -21,3 +21,4 @@ or use [doas](https://github.com/slicer69/doas) instead of sudo
 ```
 doas make b
 ```
+If you are finished installing, don't use gPac! 
