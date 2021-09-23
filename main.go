@@ -86,8 +86,8 @@ func build(pkg string) {
 
 		fmt.Println(NormalColor, "✅", ColorReset, " Using repo at: "+repo)
 		if _, err := os.Stat(package_location); os.IsNotExist(err) {
-			fmt.Println(ErrorColor, "❌ Package"+pkg+" does not exist", ColorReset)
-			// os.Exit(1)
+			fmt.Println(ErrorColor, "❌ Package "+pkg+" not found", ColorReset)
+			os.Exit(1)
 		}
 		if _, err := os.Stat(package_location); !os.IsNotExist(err) {
 			fmt.Println(NormalColor, "✅", ColorReset, " Package "+pkg+" found")
