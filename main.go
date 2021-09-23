@@ -26,6 +26,8 @@ func gconf(gconfs string, keyword string) string {
 			text := line[:len(line)-1]
 			text = text[len(keyword)+2:]
 			return text
+		} else {
+			return ""
 		}
 	}
 	panic("should never happen")
@@ -34,7 +36,7 @@ func gconf(gconfs string, keyword string) string {
 
 func main() {
 	if _, err := os.Stat("/etc/gpac.gconf"); os.IsNotExist(err) {
-		fmt.Println("/etc/gpac.gconf does not exist")
+		fmt.Println("/etc/gpac.gconf not found")
 		os.Exit(1)
 	}
 	if checkargs() {
@@ -80,19 +82,20 @@ func build(pkg string) {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() { // internally, it advances token based on sperator
+		if gconf(scanner.Text(), "repo") != "" {
+			var repo string = gconf(scanner.Text(), "repo")
 
-		var repo string = gconf(scanner.Text(), "repo")
-		var package_location string = repo + pkg
+			var package_location string = repo + pkg
 
-		fmt.Println(NormalColor, "✅", ColorReset, " Using repo at: "+repo)
-		if _, err := os.Stat(package_location); os.IsNotExist(err) {
-			fmt.Println(ErrorColor, "❌ Package "+pkg+" not found", ColorReset)
-			os.Exit(1)
+			fmt.Println(NormalColor, "✅", ColorReset, " Using repo at: "+repo)
+			if _, err := os.Stat(package_location); os.IsNotExist(err) {
+				fmt.Println(ErrorColor, "❌ Package "+pkg+" not found", ColorReset)
+				os.Exit(1)
+			}
+			if _, err := os.Stat(package_location); !os.IsNotExist(err) {
+				fmt.Println(NormalColor, "✅", ColorReset, " Package "+pkg+" found")
+			}
 		}
-		if _, err := os.Stat(package_location); !os.IsNotExist(err) {
-			fmt.Println(NormalColor, "✅", ColorReset, " Package "+pkg+" found")
-		}
-
 	}
 
 	var tmpdir string = "/tmp/"
@@ -130,58 +133,58 @@ func build(pkg string) {
 	scanner = bufio.NewScanner(file)
 
 	for scanner.Scan() { // internally, it advances token based on sperator
-
-		bcmd := exec.Command("cp", "-r", gconf(scanner.Text(), "repo")+pkg+"/"+"build", tmpdir)
-		bcmd.Stdout = os.Stdout
-		bcmd.Stderr = os.Stderr
-		if err := bcmd.Run(); err != nil {
-			log.Fatal(err)
-		}
-
-		file, err := os.Open(gconf(scanner.Text(), "repo") + pkg + "/" + "url")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer func() {
-			if err = file.Close(); err != nil {
+		if gconf(scanner.Text(), "repo") != "" {
+			bcmd := exec.Command("cp", "-r", gconf(scanner.Text(), "repo")+pkg+"/"+"build", tmpdir)
+			bcmd.Stdout = os.Stdout
+			bcmd.Stderr = os.Stderr
+			if err := bcmd.Run(); err != nil {
 				log.Fatal(err)
 			}
-		}()
 
-		scanner := bufio.NewScanner(file)
-
-		for scanner.Scan() { // internally, it advances token based on sperator
-
-			fmt.Println(scanner.Text())
-			var url string = scanner.Text()
-			// "curl",  url, ">",tmpdir + "/", os.Args[2]
-			f, err := os.Create("/tmp/clurl.sh")
+			file, err := os.Open(gconf(scanner.Text(), "repo") + pkg + "/" + "url")
 			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			l, err := f.WriteString("curl " + "-LG " + url + " > " + tmpdir + "/" + pkg + ".tar.gz")
-			if err != nil {
-				// fmt.Println(err)
-				f.Close()
-				return
-			}
-			l = l
-			err = f.Close()
-			if err != nil {
-				// fmt.Println(err)
-				return
-			}
-			ccmd := exec.Command("sh", "/tmp/clurl.sh")
-			ccmd.Stdout = os.Stdout
-			ccmd.Stderr = os.Stderr
-			if err := ccmd.Run(); err != nil {
 				log.Fatal(err)
 			}
-		}
 
+			defer func() {
+				if err = file.Close(); err != nil {
+					log.Fatal(err)
+				}
+			}()
+
+			scanner := bufio.NewScanner(file)
+
+			for scanner.Scan() { // internally, it advances token based on sperator
+
+				fmt.Println(scanner.Text())
+				var url string = scanner.Text()
+				// "curl",  url, ">",tmpdir + "/", os.Args[2]
+				f, err := os.Create("/tmp/clurl.sh")
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				l, err := f.WriteString("curl " + "-LG " + url + " > " + tmpdir + "/" + pkg + ".tar.gz")
+				if err != nil {
+					// fmt.Println(err)
+					f.Close()
+					return
+				}
+				l = l
+				err = f.Close()
+				if err != nil {
+					// fmt.Println(err)
+					return
+				}
+				ccmd := exec.Command("sh", "/tmp/clurl.sh")
+				ccmd.Stdout = os.Stdout
+				ccmd.Stderr = os.Stderr
+				if err := ccmd.Run(); err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
 	}
 
 	// build-cmd
@@ -202,7 +205,35 @@ func help() {
 		"gpac b packagename")
 	os.Exit(0)
 }
-func create(gconf_file string) {
+func create(pkgname string) {
+	file1, err := os.Open("/etc/gpac.gconf")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = file1.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	scanner1 := bufio.NewScanner(file1)
+	gconf_file := ""
+	rdir := ""
+	for scanner1.Scan() {
+		if gconf(scanner1.Text(), "grepo") != "" {
+			gconf_file = gconf(scanner1.Text(), "grepo") + pkgname + ".gconf"
+		}
+		if gconf(scanner1.Text(), "repo") != "" {
+			rdir = gconf(scanner1.Text(), "repo") + pkgname + "/"
+		}
+	}
+	fmt.Println(rdir)
+	rcmd := exec.Command("mkdir", "-p", rdir)
+	rcmd.Stdout = os.Stdout
+	rcmd.Stderr = os.Stderr
+	if err := rcmd.Run(); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println(gconf_file)
 	file, err := os.Open(gconf_file)
 	if err != nil {
@@ -216,10 +247,43 @@ func create(gconf_file string) {
 
 	scanner := bufio.NewScanner(file)
 
-	for scanner.Scan() { // internally, it advances token based on sperator
-		fmt.Println(gconf(scanner.Text(), "build"))
+	for scanner.Scan() {
 
+		if gconf(scanner.Text(), "build") != "" {
+			fmt.Println("package found")
+
+			f, err := os.Create(rdir + "build")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			l, err := f.WriteString(gconf(scanner.Text(), "build"))
+			if err != nil {
+				// fmt.Println(err)
+				f.Close()
+				return
+			}
+			l = l
+		}
+		if gconf(scanner.Text(), "url") != "" {
+
+			f, err := os.Create(rdir + "url")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			l, err := f.WriteString(gconf(scanner.Text(), "url"))
+			if err != nil {
+				// fmt.Println(err)
+				f.Close()
+				return
+			}
+			l = l
+		}
 	}
+	build(pkgname)
 }
 
 func arguments() {
@@ -237,10 +301,8 @@ func arguments() {
 
 			if os.Args[1] == "build" || os.Args[1] == "b" {
 
-				build(arg)
-
-			} else if os.Args[1] == "c" || os.Args[1] == "create" {
 				create(arg)
+
 			}
 		}
 	}

@@ -3,6 +3,8 @@ b:
 	mv main gpac
 	cp gpac.gconf /etc/gpac.gconf
 	install gpac /usr/bin
+	mkdir -p /var/db/gpac/repo
+	cp -rf grepo /var/db/gpac/
 install:
 	@echo "run make b to install gpac"
 s:
