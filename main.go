@@ -13,7 +13,7 @@ import (
 // clors
 const (
 	InfoColor   = "\033[1;34m"
-	NormalColor = "\033[32m"
+	 SucessColor = "\033[32m"
 	ErrorColor  = "\033[1;31m"
 	ColorReset  = "\033[0m"
 )
@@ -36,7 +36,7 @@ func gconf(gconfs string, keyword string) string {
 
 func main() {
 	if _, err := os.Stat("/etc/gpac.gconf"); os.IsNotExist(err) {
-		fmt.Println("/etc/gpac.gconf not found")
+		fmt.Println(ErrorColor + "Error: /etc/gpac.gconf not found" +  SucessColor)
 		os.Exit(1)
 	}
 	if checkargs() {
@@ -65,7 +65,7 @@ func isRoot() bool {
 func build(pkg string) {
 	// root-check
 	if !isRoot() {
-		fmt.Println("run me as root")
+		fmt.Println(ErrorColor + "Hey bitch! Run me as root!", ColorReset)
 		os.Exit(127)
 	}
 
@@ -87,20 +87,20 @@ func build(pkg string) {
 
 			var package_location string = repo + pkg
 
-			fmt.Println(NormalColor, "✅", ColorReset, " Using repo at: "+repo)
+			fmt.Println( SucessColor, "✅", ColorReset, " Using repo at: "+repo)
 			if _, err := os.Stat(package_location); os.IsNotExist(err) {
-				fmt.Println(ErrorColor, "❌ Package "+pkg+" not found", ColorReset)
+				fmt.Println(ErrorColor, "❌ Package "+pkg+" not found. Don't try it again!", ColorReset)
 				os.Exit(1)
 			}
 			if _, err := os.Stat(package_location); !os.IsNotExist(err) {
-				fmt.Println(NormalColor, "✅", ColorReset, " Package "+pkg+" found")
+				fmt.Println( SucessColor, "✅", ColorReset, " Package "+pkg+" found. But EGAL!")
 			}
 		}
 	}
 
 	var tmpdir string = "/tmp/"
 	tmpdir = tmpdir + pkg
-	fmt.Println(NormalColor, "✅ ", ColorReset, "Creating tmpdir: "+tmpdir)
+	fmt.Println( SucessColor, "✅ ", ColorReset, "Creating tmpdir: "+tmpdir)
 
 	if tmpdir != "/" && strings.Contains(tmpdir, "/tmp") {
 		tcmd2 := exec.Command("rm", "-rf", tmpdir)
@@ -167,14 +167,14 @@ func build(pkg string) {
 
 				l, err := f.WriteString("curl " + "-LG " + url + " > " + tmpdir + "/" + pkg + ".tar.gz")
 				if err != nil {
-					// fmt.Println(err)
+					 
 					f.Close()
 					return
 				}
 				l = l
 				err = f.Close()
 				if err != nil {
-					// fmt.Println(err)
+					 
 					return
 				}
 				ccmd := exec.Command("sh", "/tmp/clurl.sh")
@@ -195,14 +195,14 @@ func build(pkg string) {
 	if err := bcmd2.Run(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(NormalColor, "✅ ", "Package "+pkg+" installed", ColorReset)
+	fmt.Println( SucessColor, "✅ ", "Package "+pkg+" installed. So fuck off and have fun with your new bloat.", ColorReset)
 }
 
 func help() {
 	fmt.Println("+-----------+\n" +
 		"| gpac help |\n" +
 		"+-----------+\n" +
-		"gpac b packagename")
+		"Install: gpac b packagename")
 	os.Exit(0)
 }
 func create(pkgname string) {
@@ -260,7 +260,7 @@ func create(pkgname string) {
 
 			l, err := f.WriteString(gconf(scanner.Text(), "build"))
 			if err != nil {
-				// fmt.Println(err)
+				 
 				f.Close()
 				return
 			}
@@ -276,7 +276,7 @@ func create(pkgname string) {
 
 			l, err := f.WriteString(gconf(scanner.Text(), "url"))
 			if err != nil {
-				// fmt.Println(err)
+				 
 				f.Close()
 				return
 			}
